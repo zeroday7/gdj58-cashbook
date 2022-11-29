@@ -3,14 +3,74 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import util.DBUtil;
 import vo.Member;
 
 public class MemberDao {
+	// 관리자 : 멤버레벨수정
+	public int updateMemberLevel(Member member) {
+		return 0;
+	}
+	
+	// 관리자 : 멤버수
+	public int selectMemberCount() {
+		return 0;
+	}
+	// 관리자 : 멤버 리스트
+	public ArrayList<Member> selectMemberListByPage(int beginRow, int rowPerPage) throws Exception {
+		/*
+		 ORDER BY createdate DESC
+		 */
+		return null;
+	}
+	// 관리자 : 멤버 강퇴
+	public int deleteMemberByAdmin(Member member) {
+		return 0;
+	}
+	
+	// 회원탈퇴
+	public int deleteMember(Member member) {
+		return 0;
+	}
+	
+	// 회원가입 1) id중복확인 2) 회원가입
+	
+	// 반환값 t:이미존재 , f:사용가능
+	public boolean selectMemberIdCk(String memberId) throws Exception {
+		boolean result = false;
+		DBUtil dbUtil = new DBUtil();
+		Connection conn = dbUtil.getConnection();
+		String sql = "SELECT member_id FROM member WHERE member_id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, memberId);
+		ResultSet rs = stmt.executeQuery();
+		if(rs.next()) {
+			result = true;
+		}
+		dbUtil.close(rs, stmt, conn);
+		return result;
+	}
+	
+	public int insertMember(Member member) throws Exception {
+		int row = 0;
+		DBUtil dbUtil = new DBUtil();
+		Connection conn = dbUtil.getConnection();
+		String sql = "INSERT INTO member(member_id,member_pw,member_name,updatedate,createdate)"
+				+ " VALUES(?, PASSWORD(?), ?, CURDATE(), CURDATE()";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, member.getMemberId());
+		stmt.setString(2, member.getMemberPw());
+		stmt.setString(3, member.getMemberName());
+		row = stmt.executeUpdate();
+		dbUtil.close(null, stmt, conn);
+		return row;
+	}
+	
 	// 로그인
 	public Member login(Member paramMember) throws Exception {
-		Member resultMember = null;
+		Member resultMember = null; 
 		/*
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees","root","java1234");
@@ -22,7 +82,7 @@ public class MemberDao {
 		
 		DBUtil dbUtil = new DBUtil();
 		Connection conn = dbUtil.getConnection();
-		String sql = "SELECT member_id memberId, member_name memberName FROM member WHERE member_id=? AND member_pw=?";
+		String sql = "SELECT member_id memberId, member_level memberLevel, member_name memberName FROM member WHERE member_id=? AND member_pw=?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setString(1, paramMember.getMemberId());
 		stmt.setString(2, paramMember.getMemberPw());
@@ -40,14 +100,4 @@ public class MemberDao {
 		return resultMember;
 	}
 	
-	// 회원가입
-	public int insertMember(Member parmMember) throws Exception {
-		int resultRow = 0;
-		/*
-		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/employees","root","java1234");
-		*/
-		return resultRow;
-	}
 }

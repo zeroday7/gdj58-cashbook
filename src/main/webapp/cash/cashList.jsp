@@ -69,7 +69,15 @@
 </head>
 <body>
 	<div>
-		<!-- 로그인 정보(세션 loginMember 변수) 출력 -->
+		<%=loginMember.getMemberName()%>님 반갑습니다.
+		<a href="">로그아웃</a>
+		<%
+			if(loginMember.getMemberLevel() > 0) {
+		%>
+				<a href="<%=request.getContextPath()%>/admin/adminMain.jsp">관리자 페이지</a>
+		<%	
+			}
+		%>
 	</div>
 	
 	<div>
@@ -132,6 +140,9 @@
 				%>
 			</tr>
 		</table>
+	</div>
+	<div>
+		<jsp:include page="/inc/footer.jsp"></jsp:include>
 	</div>
 </body>
 </html>
